@@ -1,0 +1,42 @@
+# Investment Dashboard
+
+A static, single-page dashboard for tracking trending stocks. No build step, no backend — open `index.html` in a browser or host the folder on any static host (GitHub Pages, Netlify, S3, etc.).
+
+## Features
+
+- **Chart tab** — load any ticker (AAPL, TSLA, BTC-USD, ^GSPC, etc.) and view price across **1D / 1W / 1M / 3M / 1Y / 5Y**, plus a **Live** mode that re-fetches once per second.
+- **Trending tab** — top trending US tickers, click a row to chart it.
+- **Watchlist tab** — favorites are persisted in `localStorage`; toggle with the **+ Watch** button on the Chart tab.
+- Quote stats: open / high / low / previous close / volume / 52-week high & low / market cap.
+
+## Running locally
+
+It's plain HTML/CSS/JS. Just open `index.html` in a modern browser, or serve the directory:
+
+```bash
+python3 -m http.server 8000
+# then visit http://localhost:8000
+```
+
+## How the data works
+
+The dashboard calls Yahoo Finance's public chart and quote endpoints through a small list of public CORS proxies (`corsproxy.io`, `allorigins.win`, `codetabs.com`) with automatic fallback. See `js/api.js`.
+
+If you want to remove the third-party dependency, deploy your own proxy (e.g. a Cloudflare Worker that fetches Yahoo and re-emits with `Access-Control-Allow-Origin: *`) and put its URL first in the `PROXIES` array in `js/api.js`.
+
+### A note on "Live" mode
+
+Live mode polls every second, but Yahoo Finance's public quote feed is **delayed by ~15 minutes for most US equities**. The chart will tick as soon as new minute bars publish, but it isn't a true realtime tick stream. If you need genuine realtime data, you'll need a paid feed (Polygon.io, IEX Cloud, Finnhub, etc.) and to swap the data source in `js/api.js`.
+
+## Disclaimer
+
+**This is not financial advice.** The dashboard is a data-visualization tool only. Past performance does not predict future returns, and no software can guarantee that any trade will be profitable. Data is provided as-is and may be delayed or inaccurate. Do your own research and talk to a licensed advisor before investing real money.
+
+## File layout
+
+```
+index.html      # markup, three tabs
+css/style.css   # dark-theme styles
+js/api.js       # Yahoo Finance wrapper with CORS-proxy fallback
+js/app.js       # tabs, chart rendering, watchlist, live refresh
+```
