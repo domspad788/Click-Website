@@ -1,0 +1,34 @@
+{
+  "name": "investment-dashboard",
+  "version": "1.0.0",
+  "description": "Cross-platform desktop investment dashboard. Trending stocks + per-ticker chart with timeframes and a 3-second live refresh.",
+  "main": "electron/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder",
+    "dist:mac": "electron-builder --mac",
+    "dist:win": "electron-builder --win",
+    "dist:linux": "electron-builder --linux"
+  },
+  "devDependencies": {
+    "electron": "^32.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "com.investmentdashboard.app",
+    "productName": "Investment Dashboard",
+    "files": [
+      "electron/**/*",
+      "css/**/*",
+      "js/**/*",
+      "index.html"
+    ],
+    "directories": {
+      "output": "dist-electron"
+    },
+    "mac": { "target": "dmg", "category": "public.app-category.finance" },
+    "win": { "target": "nsis" },
+    "linux": { "target": "AppImage", "category": "Office" }
+  }
+}

@@ -9,9 +9,31 @@ A static, single-page dashboard for tracking trending stocks. No build step, no 
 - **Watchlist tab** — favorites are persisted in `localStorage`; toggle with the **+ Watch** button on the Chart tab.
 - Quote stats: open / high / low / previous close / volume / 52-week high & low / market cap.
 
-## Running locally
+## Running
 
-It's plain HTML/CSS/JS. Just open `index.html` in a modern browser, or serve the directory:
+### Desktop app (Mac / Windows / Linux)
+
+The dashboard ships as an Electron app:
+
+```bash
+npm install
+npm start
+```
+
+To produce installer packages (`.dmg` / `.exe` / `.AppImage`):
+
+```bash
+npm run dist          # current platform
+npm run dist:mac      # macOS .dmg
+npm run dist:win      # Windows .exe (NSIS installer)
+npm run dist:linux    # Linux AppImage
+```
+
+Output lands in `dist-electron/`.
+
+### In a browser
+
+It's also plain HTML/CSS/JS, so you can open `index.html` directly or serve the directory:
 
 ```bash
 python3 -m http.server 8000
@@ -37,8 +59,10 @@ Live mode polls the chart endpoint every 3 seconds. Yahoo's public feed is **del
 ## File layout
 
 ```
-index.html      # markup, three tabs
-css/style.css   # dark-theme styles
-js/api.js       # Yahoo Finance wrapper with CORS-proxy fallback
-js/app.js       # tabs, chart rendering, watchlist, live refresh
+index.html         # markup, three tabs
+css/style.css      # dark-theme styles
+js/api.js          # Yahoo Finance wrapper with CORS-proxy fallback
+js/app.js          # tabs, chart rendering, watchlist, live refresh
+electron/main.js   # Electron main process (desktop app)
+package.json       # Electron + electron-builder config
 ```
