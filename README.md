@@ -20,13 +20,15 @@ python3 -m http.server 8000
 
 ## How the data works
 
-The dashboard calls Yahoo Finance's public chart and quote endpoints through a small list of public CORS proxies (`corsproxy.io`, `allorigins.win`, `codetabs.com`) with automatic fallback. See `js/api.js`.
+All data is sourced from Yahoo Finance's `/v8/finance/chart` endpoint, routed through a list of public CORS proxies (`corsproxy.io`, `codetabs.com`, `allorigins.win`, `thingproxy`) with automatic fallback. See `js/api.js`.
 
-If you want to remove the third-party dependency, deploy your own proxy (e.g. a Cloudflare Worker that fetches Yahoo and re-emits with `Access-Control-Allow-Origin: *`) and put its URL first in the `PROXIES` array in `js/api.js`.
+**Why only the chart endpoint?** As of 2026, Yahoo's `/v7/finance/quote` (batch quote) and `/v1/finance/trending/US` endpoints require a crumb + cookie session and return `401 Unauthorized` to unauthenticated callers. The chart endpoint still works without auth, and its `meta` block carries everything we need for the quote header (price, change, prev close, day high/low, volume, 52-week high/low, currency, exchange). So we synthesize quotes from chart calls and replace trending with a curated list of frequently-traded tickers (`StockAPI.TRENDING` in `js/api.js` — edit to taste). Market cap is the one field unavailable from the chart endpoint and is hidden.
+
+If you want to remove the third-party proxy dependency, deploy your own (e.g. a Cloudflare Worker that fetches Yahoo and re-emits with `Access-Control-Allow-Origin: *`) and put its URL first in the `PROXIES` array in `js/api.js`.
 
 ### A note on "Live" mode
 
-Live mode polls every second, but Yahoo Finance's public quote feed is **delayed by ~15 minutes for most US equities**. The chart will tick as soon as new minute bars publish, but it isn't a true realtime tick stream. If you need genuine realtime data, you'll need a paid feed (Polygon.io, IEX Cloud, Finnhub, etc.) and to swap the data source in `js/api.js`.
+Live mode polls the chart endpoint every 3 seconds. Yahoo's public feed is **delayed ~15 minutes for most US equities**, so polling faster than that wouldn't reveal new ticks and would risk getting rate-limited by the free CORS proxy. If you need true realtime tick data, you'll want a paid feed (Polygon.io, IEX Cloud, Finnhub, Alpaca, etc.) and to swap the data source in `js/api.js`.
 
 ## Disclaimer
 

@@ -193,11 +193,12 @@
     updateWatchButton();
     await loadChartAndQuote();
     if (state.range === "live") {
-      // Re-fetch every second. Yahoo data is delayed 15 min for many symbols,
-      // but the chart still ticks as soon as new minute bars publish.
+      // 3s feels live without hammering free CORS proxies into rate-limit
+      // territory. Yahoo data is delayed ~15 min for most US equities, so a
+      // tighter interval wouldn't reveal anything new anyway.
       state.refreshTimer = setInterval(() => {
         loadChartAndQuote().catch(() => {});
-      }, 1000);
+      }, 3000);
     }
   }
 
@@ -205,13 +206,10 @@
     const token = ++state.inflight;
     els.chartStatus.textContent = "Loading…";
     try {
-      const [chartData, quotes] = await Promise.all([
-        StockAPI.fetchChart(state.symbol, state.range),
-        StockAPI.fetchQuote(state.symbol),
-      ]);
+      const chartData = await StockAPI.fetchChart(state.symbol, state.range);
       if (token !== state.inflight) return; // stale
       renderChart(chartData);
-      renderQuote(quotes[0], chartData);
+      renderQuote(chartData.quote, chartData);
       els.chartStatus.textContent = "";
     } catch (err) {
       if (token !== state.inflight) return;
@@ -273,13 +271,12 @@
 
   // ===== Trending tab =====
   els.trendingRefresh.addEventListener("click", loadTrending);
-  let trendingLoaded = false;
   async function loadTrending() {
-    els.trendingBody.innerHTML = `<tr><td colspan="6" class="muted">Loading…</td></tr>`;
+    els.trendingBody.innerHTML = `<tr><td colspan="6" class="muted">Loading 20 tickers…</td></tr>`;
     try {
       const quotes = await StockAPI.fetchTrending();
+      if (!quotes.length) throw new Error("no quotes returned");
       renderQuotesTable(els.trendingBody, quotes, { showRemove: false });
-      trendingLoaded = true;
     } catch (err) {
       els.trendingBody.innerHTML = `<tr><td colspan="6" class="muted">Couldn't load trending: ${err.message}</td></tr>`;
     }
