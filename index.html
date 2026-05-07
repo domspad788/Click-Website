@@ -196,9 +196,12 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
   box-shadow:0 30px 80px rgba(0,0,0,.5), 0 0 0 1px var(--rule-inv), 0 0 60px rgba(var(--accent-rgb),.06);
   z-index:50;
 }
-.nav-item:hover .dropdown{
-  opacity:1;visibility:visible;pointer-events:auto;
-  transform:translateX(-50%) translateY(0);
+@media (hover:hover){
+  .nav-item:hover .dropdown{
+    opacity:1;visibility:visible;pointer-events:auto;
+    transform:translateX(-50%) translateY(0);
+  }
+  .nav-item:hover .dropdown.narrow{transform:translateX(0) translateY(0)}
 }
 .nav-item::after{
   content:"";position:absolute;
@@ -206,7 +209,6 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 }
 .dropdown.wide{min-width:780px}
 .dropdown.narrow{min-width:320px;left:auto;right:0;transform:translateX(0) translateY(-8px)}
-.nav-item:hover .dropdown.narrow{transform:translateX(0) translateY(0)}
 .dd-grid{display:grid;gap:24px}
 .dd-grid.c3{grid-template-columns:repeat(3,1fr)}
 .dd-grid.c2{grid-template-columns:repeat(2,1fr)}
@@ -299,12 +301,12 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
   .nav-item{width:100%}
   .nav-link{width:100%;justify-content:space-between;padding:12px 14px;color:var(--text-inv)}
   .nav.light .nav-link{color:var(--text-inv)}
-  .dropdown{
-    position:static;min-width:0;width:100%;
+  .dropdown,.dropdown.wide,.dropdown.narrow{
+    position:static;min-width:0;max-width:100%;width:100%;
     padding:6px 4px 4px;margin-top:2px;
     background:transparent;border:none;box-shadow:none;
     opacity:1;visibility:visible;pointer-events:auto;transform:none;
-    display:none;
+    display:none;left:auto;right:auto;
   }
   .nav-item.mob-open .dropdown{display:block}
   .nav-item::after{display:none}
@@ -1246,6 +1248,23 @@ section{position:relative}
 .showcase-chip-2 .dash-chip-label{font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-inv-muted);margin-bottom:4px}
 .showcase-chip-2 .dash-chip-num{font-family:var(--f-display);font-weight:500;font-style:italic;font-size:26px;letter-spacing:-.02em;color:var(--accent-green);line-height:1}
 @media (max-width:980px){.showcase-window{max-width:480px;margin:0 auto;transform:none;animation:none}.showcase-window-wrap{min-height:auto}.showcase-chip-1{right:-4px;top:-10px}.showcase-chip-2{left:-12px;bottom:-12px}}
+@media (max-width:560px){
+  .showcase-card{padding:24px 16px;gap:32px;border-radius:18px}
+  .showcase-window{max-width:100%}
+  .showcase-window-wrap{padding:0 4px}
+  .showcase-chip-1{right:6px;top:-6px;font-size:9.5px;padding:7px 11px}
+  .showcase-chip-2{left:6px;bottom:6px;min-width:0;padding:9px 12px}
+  .showcase-chip-2 .dash-chip-num{font-size:22px}
+  .showcase-screen{padding:14px;gap:12px}
+  .showcase-nav{padding:8px 10px;gap:8px}
+  .showcase-logo{font-size:11px;letter-spacing:.12em}
+  .showcase-nav-links{display:none}
+  .showcase-cta{padding:5px 9px;font-size:9px}
+  .showcase-services{grid-template-columns:1fr;gap:6px}
+  .showcase-svc{padding:8px 10px;font-size:10px}
+  .dash-head{padding:10px 12px;gap:8px}
+  .dash-url{font-size:10px;padding:4px 9px;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+}
 
 /* "You're next" sales pitch box — appears between past clients & industry grid */
 .next-pitch{
@@ -1385,6 +1404,12 @@ section{position:relative}
 .partners-inner{max-width:var(--max);margin:0 auto}
 .partners-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:60px}
 @media (max-width:880px){.partners-grid{grid-template-columns:1fr}}
+@media (max-width:560px){
+  .partner{padding:26px 22px;grid-template-columns:1fr;gap:18px}
+  .partner-avatar{width:72px;height:72px;font-size:28px}
+  .partner::before{width:60px;height:60px}
+  .partner-name{font-size:24px}
+}
 .partner{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius);padding:34px 32px;display:grid;grid-template-columns:88px 1fr;gap:26px;align-items:flex-start;transition:transform .3s,box-shadow .3s;position:relative;overflow:hidden}
 .partner::before{content:"";position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle at top right,rgba(var(--accent-rgb),.15),transparent 70%);opacity:0;transition:opacity .4s}
 .partner:hover::before{opacity:1}
@@ -2318,10 +2343,8 @@ section{position:relative}
   </section>
 
   <style>
-    .globe-section{position:relative;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);width:100vw;height:660px;background:radial-gradient(ellipse 55% 60% at 50% 50%,#02061a 0%,#050b22 22%,rgba(5,11,34,.78) 45%,rgba(14,27,44,.4) 70%,rgba(14,27,44,.1) 88%,transparent 100%),var(--ink);overflow:hidden;isolation:isolate}
-    .globe-section::before{content:"";position:absolute;left:0;right:0;top:0;height:120px;background:linear-gradient(to bottom,var(--ink) 0%,rgba(14,27,44,.6) 60%,transparent 100%);z-index:5;pointer-events:none}
-    .globe-section::after{content:"";position:absolute;left:0;right:0;bottom:0;height:120px;background:linear-gradient(to top,var(--ink) 0%,rgba(14,27,44,.6) 60%,transparent 100%);z-index:5;pointer-events:none}
-    .globe-stars{position:absolute;inset:0;pointer-events:none;z-index:1;-webkit-mask-image:radial-gradient(ellipse 55% 60% at 50% 50%,black 25%,transparent 90%);mask-image:radial-gradient(ellipse 55% 60% at 50% 50%,black 25%,transparent 90%)}
+    .globe-section{position:relative;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);width:100vw;height:660px;background:radial-gradient(ellipse 75% 70% at 50% 50%,#020613 0%,#04081e 25%,rgba(8,14,38,.7) 50%,rgba(14,27,44,.35) 75%,transparent 100%),var(--ink);overflow:hidden;isolation:isolate}
+    .globe-stars{position:absolute;inset:0;pointer-events:none;z-index:1;-webkit-mask-image:radial-gradient(ellipse 70% 65% at 50% 50%,black 30%,transparent 95%);mask-image:radial-gradient(ellipse 70% 65% at 50% 50%,black 30%,transparent 95%)}
     .globe-stars__static{position:absolute;width:1px;height:1px;border-radius:50%}
     .globe-stars__twinkle{position:absolute;border-radius:50%;background:#fff;animation:globe-twinkle var(--dur,3s) ease-in-out infinite;animation-delay:var(--del,0s)}
     @keyframes globe-twinkle{0%,100%{opacity:var(--min,.2);transform:scale(.7)}50%{opacity:1;transform:scale(1.3);box-shadow:0 0 6px rgba(255,255,255,.8)}}
