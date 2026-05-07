@@ -2463,7 +2463,7 @@ section{position:relative}
     const W0 = stage.clientWidth || 800, H0 = stage.clientHeight || 660;
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(38, W0/H0, 0.1, 100);
-    camera.position.set(0, 0, 3.0);
+    camera.position.set(0, 0, 4.0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(W0, H0);
@@ -2505,31 +2505,6 @@ section{position:relative}
       shininess: 14
     });
     earthGroup.add(new THREE.Mesh(new THREE.SphereGeometry(1, 64, 64), earthMat));
-
-    /* Atmosphere — soft blue rim glow (back-side fresnel) */
-    const atmoMat = new THREE.ShaderMaterial({
-      uniforms: { glowColor: { value: new THREE.Color(0x4f8aff) } },
-      vertexShader: `
-        varying vec3 vNormal;
-        void main() {
-          vNormal = normalize(normalMatrix * normal);
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
-      fragmentShader: `
-        uniform vec3 glowColor;
-        varying vec3 vNormal;
-        void main() {
-          float i = pow(0.65 - dot(vNormal, vec3(0,0,1)), 2.0) * 1.2;
-          gl_FragColor = vec4(glowColor, i);
-        }
-      `,
-      side: THREE.BackSide,
-      blending: THREE.AdditiveBlending,
-      transparent: true,
-      depthWrite: false
-    });
-    scene.add(new THREE.Mesh(new THREE.SphereGeometry(1.18, 64, 64), atmoMat));
 
     /* HQ marker (surface dot + halo ring) */
     const hqGroup = new THREE.Group();
